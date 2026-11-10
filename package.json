@@ -1,0 +1,24 @@
+{
+  "name": "syscafe-requerimientos-api",
+  "version": "1.0.0",
+  "description": "API modular con Express para la Gestión de Requerimientos de Cliente de SysCafé S.A.S. — módulos en src/modules/ se ensamblan solos al arrancar.",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon --watch src --ext js,json src/server.js",
+    "modules:list": "node scripts/modules.js list",
+    "modules:check": "node scripts/modules.js check",
+    "modules:create": "node scripts/modules.js create",
+    "test": "node --test \"test/**/*.test.js\""
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

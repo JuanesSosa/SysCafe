@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="data:,">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SysCafé · Requerimientos</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <!-- Inicio de sesión -->
+  <main id="vista-login" class="login" hidden>
+    <section class="login-panel" aria-labelledby="t-login">
+      <div class="marca grande"><span class="taza" aria-hidden="true"></span><span class="marca-nombre">SysCafé</span></div>
+      <h1 id="t-login">Ingresa a tus requerimientos</h1>
+      <p class="login-sub">Cada equipo ve solo sus tableros y casos.</p>
+      <form id="form-login" novalidate>
+        <label>Correo
+          <input name="correo" type="email" autocomplete="username" placeholder="nombre@syscafe.local" required>
+        </label>
+        <label>Clave
+          <input name="clave" type="password" autocomplete="current-password" required>
+        </label>
+        <button type="submit" class="btn primary ancho">Ingresar</button>
+        <p id="login-estado" class="estado" role="alert"></p>
+      </form>
+    </section>
+    <aside class="login-demo" aria-label="Cuentas de demostración">
+      <h2>Cuentas de demostración</h2>
+      <p>Clave de todas: <code>syscafe123</code>. Toca una para llenar el correo.</p>
+      <div id="demo-cuentas" class="demo-cuentas"></div>
+    </aside>
+  </main>
+
+  <!-- Aplicación -->
+  <div id="vista-app" hidden>
+    <header class="top">
+      <div class="marca"><span class="taza" aria-hidden="true"></span><span class="marca-nombre">SysCafé</span><span class="marca-sub">Requerimientos</span></div>
+      <nav class="vistas" id="nav-vistas" aria-label="Secciones">
+        <button type="button" class="vista-btn" data-vista="tablero" aria-current="page">Tablero</button>
+        <button type="button" class="vista-btn" data-vista="admin" id="btn-admin" hidden>Administración</button>
+      </nav>
+      <div class="usuario">
+        <div class="usuario-datos"><strong id="u-nombre"></strong><span id="u-detalle"></span></div>
+        <button type="button" class="btn oscuro" id="btn-clave">Mi clave</button>
+        <button type="button" class="btn oscuro" id="btn-salir">Salir</button>
+      </div>
+    </header>
+
+    <main id="vista-tablero">
+      <div class="barra">
+        <div class="barra-izq">
+          <p class="equipo-actual" id="equipo-actual"></p>
+          <div id="tabs-tableros" class="tabs" role="tablist" aria-label="Tableros"></div>
+        </div>
+        <div class="barra-der">
+          <button type="button" class="btn ghost" id="btn-ejemplos" hidden>Cargar casos de ejemplo</button>
+          <button type="button" class="btn primary" id="btn-nueva" hidden>Registrar llamada</button>
+        </div>
+      </div>
+      <div id="aviso-tablero" class="aviso" hidden></div>
+      <section aria-labelledby="t-tablero">
+        <h2 id="t-tablero" class="visually-hidden">Casos por centro</h2>
+        <div id="tablero" class="tablero"></div>
+      </section>
+    </main>
+
+    <main id="vista-admin" hidden>
+      <div id="admin-contenido" class="admin"></div>
+    </main>
+  </div>
+
+  <!-- Registrar llamada -->
+  <dialog id="nueva" aria-labelledby="nueva-titulo">
+    <div class="dlg-cab">
+      <div><h2 id="nueva-titulo">Registrar una llamada</h2><p id="nueva-meta" class="meta"></p></div>
+      <button type="button" class="btn cerrar" data-cerrar="nueva" aria-label="Cerrar">Cerrar</button>
+    </div>
+    <form id="form-caso" class="dlg-cuerpo" novalidate>
+      <div class="dos">
+        <label>Cliente
+          <select name="clienteId" required></select>
+        </label>
+        <label>Canal
+          <select name="canal" required>
+            <option value="telefonico">Teléfono</option>
+            <option value="email">Correo</option>
+            <option value="presencial">Presencial</option>
+          </select>
+        </label>
+      </div>
+      <fieldset class="menu">
+        <legend>¿Qué dice el cliente? Elige el motivo</legend>
+        <div id="menu-opciones" class="menu-opciones"></div>
+      </fieldset>
+      <label id="campo-tipo" hidden>Tipo (solo para “Otro”)
+        <select name="tipo">
+          <option value="solicitud">Solicitud</option>
+          <option value="problema">Problema</option>
+          <option value="incidente">Incidente</option>
+        </select>
+      </label>
+      <label>Detalle <span id="detalle-ayuda" class="ayuda">(opcional)</span>
+        <textarea name="detalle" rows="2" maxlength="500" placeholder="Algo que el cliente agregó, con sus palabras. Ej: sale en blanco desde ayer"></textarea>
+      </label>
+      <p class="nota">El motivo y el detalle quedan sellados: ningún centro puede reescribirlos después.</p>
+      <div class="acciones">
+        <button type="submit" class="btn primary">Registrar caso</button>
+        <p id="form-estado" class="estado" role="status"></p>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Detalle del caso -->
+  <dialog id="detalle" aria-labelledby="det-titulo">
+    <div class="dlg-cab">
+      <div><h2 id="det-titulo"></h2><p id="det-meta" class="meta"></p></div>
+      <button type="button" class="btn cerrar" data-cerrar="detalle" aria-label="Cerrar detalle">Cerrar</button>
+    </div>
+    <div id="det-cuerpo" class="dlg-cuerpo"></div>
+  </dialog>
+
+  <!-- Cambiar mi clave -->
+  <dialog id="clave" aria-labelledby="clave-titulo">
+    <div class="dlg-cab">
+      <div><h2 id="clave-titulo">Cambiar mi clave</h2><p class="meta">Se cerrarán tus otras sesiones abiertas.</p></div>
+      <button type="button" class="btn cerrar" data-cerrar="clave" aria-label="Cerrar">Cerrar</button>
+    </div>
+    <form id="form-clave" class="dlg-cuerpo" novalidate>
+      <label>Clave actual<input name="claveActual" type="password" autocomplete="current-password" required></label>
+      <label>Clave nueva <span class="ayuda">(mínimo 8 caracteres)</span><input name="claveNueva" type="password" autocomplete="new-password" minlength="8" required></label>
+      <div class="acciones"><button type="submit" class="btn primary">Guardar clave</button><p id="clave-estado" class="estado" role="alert"></p></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
