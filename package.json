@@ -13,7 +13,8 @@
     "modules:list": "node scripts/modules.js list",
     "modules:check": "node scripts/modules.js check",
     "modules:create": "node scripts/modules.js create",
-    "test": "node --test \"test/**/*.test.js\""
+    "test": "node --test \"test/**/*.test.js\"",
+    "coverage": "node --test --experimental-test-coverage --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=lcov.info \"test/**/*.test.js\""
   },
   "dependencies": {
     "express": "^5.2.1"
