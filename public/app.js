@@ -154,7 +154,7 @@ function cambiarVista(v) {
   $('#vista-tablero').hidden = v !== 'tablero';
   $('#vista-admin').hidden = v !== 'admin';
   document.querySelectorAll('.vista-btn').forEach((b) => (b.dataset.vista === v ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current')));
-  if (v === 'admin') pintarAdmin();
+  if (v === 'admin') void pintarAdmin();
 }
 document.querySelectorAll('.vista-btn').forEach((b) => b.addEventListener('click', () => cambiarVista(b.dataset.vista)));
 
@@ -386,31 +386,31 @@ async function pintarAdmin() {
         const ts = tableros.filter((t) => t.equipoId === e.id);
         const nUsers = usuarios.filter((u) => u.equipoId === e.id).length;
         const formT = el('form', { class: 'alta', style: 'margin-top:.5rem;padding-top:.6rem', novalidate: true }, el('label', {}, 'Nuevo tablero', el('input', { name: 'nombre', placeholder: 'Ej: Facturación', minlength: 3 })), el('button', { class: 'btn ghost chico', type: 'submit' }, 'Agregar tablero'));
-        formT.addEventListener('submit', (ev) => { ev.preventDefault(); const nombre = new FormData(formT).get('nombre').trim(); ok(() => api('/tableros', { method: 'POST', body: { equipoId: e.id, nombre } }), 'Tablero creado.'); });
+        formT.addEventListener('submit', (ev) => { ev.preventDefault(); const nombre = new FormData(formT).get('nombre').trim(); void ok(() => api('/tableros', { method: 'POST', body: { equipoId: e.id, nombre } }), 'Tablero creado.'); });
         return el('article', { class: 'equipo-tarjeta' },
           el('header', {}, el('div', {}, el('h3', {}, e.nombre), el('p', { class: 'meta' }, `${nUsers} persona(s) · ${ts.length} tablero(s)${e.descripcion ? ' · ' + e.descripcion : ''}`)),
-            el('button', { type: 'button', class: 'btn peligro chico', onclick: () => confirm(`¿Eliminar el equipo ${e.nombre}?`) && ok(() => api(`/equipos/${e.id}`, { method: 'DELETE' }), 'Equipo eliminado.') }, 'Eliminar equipo')),
-          el('div', { class: 'tableros' }, ts.length ? ts.map((t) => el('span', { class: 'pildora' }, t.nombre, el('button', { type: 'button', 'aria-label': `Eliminar tablero ${t.nombre}`, onclick: () => confirm(`¿Eliminar el tablero ${t.nombre}?`) && ok(() => api(`/tableros/${t.id}`, { method: 'DELETE' }), 'Tablero eliminado.') }, '×'))) : el('span', { class: 'vacio' }, 'Sin tableros.')),
+            el('button', { type: 'button', class: 'btn peligro chico', onclick: () => confirm(`¿Eliminar el equipo ${e.nombre}?`) && void ok(() => api(`/equipos/${e.id}`, { method: 'DELETE' }), 'Equipo eliminado.') }, 'Eliminar equipo')),
+          el('div', { class: 'tableros' }, ts.length ? ts.map((t) => el('span', { class: 'pildora' }, t.nombre, el('button', { type: 'button', 'aria-label': `Eliminar tablero ${t.nombre}`, onclick: () => confirm(`¿Eliminar el tablero ${t.nombre}?`) && void ok(() => api(`/tableros/${t.id}`, { method: 'DELETE' }), 'Tablero eliminado.') }, '×'))) : el('span', { class: 'vacio' }, 'Sin tableros.')),
           formT);
       }));
     const formE = el('form', { class: 'alta', novalidate: true }, el('label', {}, 'Nuevo equipo', el('input', { name: 'nombre', placeholder: 'Ej: Equipo Oriente' })), el('label', {}, 'Descripción (opcional)', el('input', { name: 'descripcion' })), el('button', { class: 'btn primary', type: 'submit' }, 'Crear equipo'));
-    formE.addEventListener('submit', (ev) => { ev.preventDefault(); const d = Object.fromEntries(new FormData(formE)); ok(() => api('/equipos', { method: 'POST', body: { nombre: d.nombre.trim(), descripcion: d.descripcion.trim() || undefined } }), 'Equipo creado.'); });
+    formE.addEventListener('submit', (ev) => { ev.preventDefault(); const d = Object.fromEntries(new FormData(formE)); void ok(() => api('/equipos', { method: 'POST', body: { nombre: d.nombre.trim(), descripcion: d.descripcion.trim() || undefined } }), 'Equipo creado.'); });
     equiposPanel.append(formE);
 
     const filas = usuarios.map((u) => {
       const sel = el('select', { 'aria-label': `Equipo de ${u.nombre}`, disabled: u.rol === 'admin' }, u.rol === 'admin' ? el('option', {}, 'Todos') : opcionesEquipo(u.equipoId));
-      sel.addEventListener('change', () => ok(() => api(`/usuarios/${u.id}`, { method: 'PUT', body: { equipoId: sel.value } }), `${u.nombre} cambió de equipo.`));
+      sel.addEventListener('change', () => void ok(() => api(`/usuarios/${u.id}`, { method: 'PUT', body: { equipoId: sel.value } }), `${u.nombre} cambió de equipo.`));
       return el('tr', {}, el('td', {}, u.nombre), el('td', {}, u.correo), el('td', {}, el('span', { class: 'chip rol' }, ROL_NOMBRE[u.rol])), el('td', {}, sel),
         el('td', { class: 'fin' },
-          el('button', { type: 'button', class: 'btn ghost chico', onclick: () => { const c = prompt(`Clave nueva para ${u.nombre} (mínimo 8 caracteres):`); if (c) ok(() => api(`/usuarios/${u.id}`, { method: 'PUT', body: { clave: c } }), 'Clave restablecida.'); } }, 'Restablecer clave'), ' ',
-          u.id === state.me.id ? null : el('button', { type: 'button', class: 'btn peligro chico', onclick: () => confirm(`¿Eliminar a ${u.nombre}?`) && ok(() => api(`/usuarios/${u.id}`, { method: 'DELETE' }), 'Usuario eliminado.') }, 'Eliminar')));
+          el('button', { type: 'button', class: 'btn ghost chico', onclick: () => { const c = prompt(`Clave nueva para ${u.nombre} (mínimo 8 caracteres):`); if (c) void ok(() => api(`/usuarios/${u.id}`, { method: 'PUT', body: { clave: c } }), 'Clave restablecida.'); } }, 'Restablecer clave'), ' ',
+          u.id === state.me.id ? null : el('button', { type: 'button', class: 'btn peligro chico', onclick: () => confirm(`¿Eliminar a ${u.nombre}?`) && void ok(() => api(`/usuarios/${u.id}`, { method: 'DELETE' }), 'Usuario eliminado.') }, 'Eliminar')));
     });
     const formU = el('form', { class: 'alta', novalidate: true },
       el('label', {}, 'Nombre', el('input', { name: 'nombre' })), el('label', {}, 'Correo', el('input', { name: 'correo', type: 'email' })),
       el('label', {}, 'Rol', el('select', { name: 'rol' }, Object.entries(ROL_NOMBRE).map(([v, n]) => el('option', { value: v }, n)))),
       el('label', {}, 'Equipo', el('select', { name: 'equipoId' }, opcionesEquipo())), el('label', {}, 'Clave inicial', el('input', { name: 'clave', type: 'password', autocomplete: 'new-password' })),
       el('button', { class: 'btn primary', type: 'submit' }, 'Crear usuario'));
-    formU.addEventListener('submit', (ev) => { ev.preventDefault(); const d = Object.fromEntries(new FormData(formU)); ok(() => api('/usuarios', { method: 'POST', body: { ...d, nombre: d.nombre.trim(), correo: d.correo.trim(), equipoId: d.rol === 'admin' ? undefined : d.equipoId } }), 'Usuario creado.'); });
+    formU.addEventListener('submit', (ev) => { ev.preventDefault(); const d = Object.fromEntries(new FormData(formU)); void ok(() => api('/usuarios', { method: 'POST', body: { ...d, nombre: d.nombre.trim(), correo: d.correo.trim(), equipoId: d.rol === 'admin' ? undefined : d.equipoId } }), 'Usuario creado.'); });
     const usuariosPanel = el('section', { class: 'panel' }, el('h2', {}, 'Personas'), el('p', {}, 'Cambiar a alguien de equipo cambia al instante lo que puede ver.'),
       el('div', { class: 'tabla-scroll' }, el('table', { class: 'tabla' }, el('thead', {}, el('tr', {}, ['Nombre', 'Correo', 'Rol', 'Equipo', ''].map((h) => el('th', {}, h)))), el('tbody', {}, filas))), formU);
 

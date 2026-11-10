@@ -1,23 +1,22 @@
-name: SonarQube
+name: SonarQube Cloud
 on:
   push:
     branches: [main]
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
-  build:
-    name: Analyze
+  analisis:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # SonarQube necesita el historial completo
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - run: npm ci
-      - run: npm run coverage
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@4d1dc0c91ee400dcf8a6dddf2f705ac36542e304 # v8.4.0
+      - run: npm run coverage # corre las 38 pruebas y genera lcov.info
+      - uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
