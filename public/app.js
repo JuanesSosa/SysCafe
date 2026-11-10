@@ -419,7 +419,7 @@ async function pintarAdmin() {
 }
 
 /* ---------- arranque ---------- */
-(async () => {
+void (async () => {
   if (!leer('token')) return mostrarLogin();
   try { await entrar(await api('/auth/yo')); } catch { mostrarLogin(); }
 })();
